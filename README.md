@@ -1,6 +1,6 @@
 <div align="center">
     <h1>Curso de Scrapy</h1>
-    <img src="https://imgur.com/pWnJbq5.png" width="">
+    <img src="https://imgur.com/KaVGYiK.png" width="">
 </div>
 
 ## Introducción al documento
