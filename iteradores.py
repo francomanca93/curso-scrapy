@@ -1,4 +1,4 @@
-my_list = [1,2,3,4,5]
+my_list = [1, 2, 3, 4, 5]
 
 ## Normalmente usamos un for para recorrer la lista
 # for element in my_list:
