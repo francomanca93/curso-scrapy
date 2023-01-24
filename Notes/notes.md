@@ -574,7 +574,7 @@ Tags
 
 ### Clase 12 Guardando los datos
 
-Modificamos el archivo anterior para convertirlo en un generador que nos entregue un yield con un diccionario
+Modificamos el archivo anterior para convertirlo en un generador que nos retorne un yield con un diccionario
 
 ```py
 import scrapy
@@ -592,11 +592,14 @@ class QoutesSpider(scrapy.Spider):
 
     #Transformaremos a parse en un generador
     def parse(self, response):
-        title = response.xpath('//h1/a/text()').get()
-        quotes = response.xpath(
-            '//span[@class="text" and @itemprop="text"]/text()').getall()
-        top_ten_tags = response.xpath(
-            '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()').getall()
+        title_path = '//h1/a/text()'
+        title = response.xpath(title_path).get()
+
+        quotes_path = '//span[@class="text" and @itemprop="text"]/text()'
+        quotes = response.xpath(quotes_path).getall()
+
+        top_ten_tags_path = '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()'
+        top_ten_tags = response.xpath(top_ten_tags_path).getall()
 
         yield {
             'title': title,
@@ -614,6 +617,10 @@ scrapy crawl quotes -o quotes.json
 ```py
 scrapy crawl quotes -o quotes.csv
 ```
+
+A tener en cuenta:
+
+> Si vuelvo a ejecutar el comando anterior ya existiendo ese archivo lo que realizara scrapy es un append al archivo existente, para solucionar este problema y no tener datos duplicados unicamente debo borrar el archivo antes de ejecutar el comando.
 
 ### Clase 13 Seguir links: responsefollow
 
