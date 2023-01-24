@@ -209,9 +209,9 @@ Ahora dentro de `tutorial` tenemos el archivo `resultados.html` con el contenido
 
 **Python nunca recorre una lista de manera directa para obtener los elementos**, en el lenguaje tenemos elementos divisibles como los strings, listas, tuplas, diccionarios, ellos son llamado iterables, ya que a partir de ellos puedo crear un objeto especial llamado iterador, el cual python si es capaz de recorrer de manera directa utilizando un ciclo for, es decir primero convertirnos un iterable en un iterador, y después lo recorremos elemento por elemento.
 
-Salimos del proyecto anterior y venv, creamos en root del curso el archivo `iteradores.py`
+Salimos del proyecto anterior y venv, creamos en root del curso el archivo [iteradores.py](../iteradores.py).
 
-Ejemplo iteradores
+Ejemplo iteradores:
 
 ```py
 my_list = [1,2,3,4,5]
@@ -235,13 +235,13 @@ print(next(my_iter))
 print(next(my_iter))
 ```
 
-Esto es lo que hace un for con azúcar sintáctica y cuando encuentra el error StopIteration el ciclo para
+Esto es lo que hace un for con azúcar sintáctica y cuando encuentra el error StopIteration el ciclo se detiene.
 
 #### Generadores
 
-En python tenemos formas fáciles de crear iteradores estas son llamadas generador (generator), este es como una función pero con poderes especiales, por ejemplo cuando hacemos **return** en una función este corta la ejecución de la misma, en un generador python guarda el estado de la funcion y continua la ejecución donde lo dejaste para cuando vuelvas a llamar a esta funcion ese estado lo tengas disponible otra vez.
+En python tenemos formas fáciles de crear iteradores estas son llamadas generador (generator), este es como una función pero con poderes especiales, por ejemplo cuando hacemos **return** en una función este corta la ejecución de la misma, en un generador python guarda el estado de la funcion y continua la ejecución donde lo dejaste para cuando vuelvas a llamar a esta funcion ese estado lo tengas disponible otra vez, esto lo logramos gracias a la palabra clave **yield**.
 
-Creamos el archivo generadores.py
+Creamos el archivo [generadores.py](../generadores.py):
 
 ```py
 def my_gen():
@@ -262,7 +262,9 @@ print(next(my_first_gen))
 print(next(my_first_gen))
 ```
 
-Al llamarlo con la consola nos devuelve el resultado paso a paso, al sobrepasar los pasos se genera un error del tipo stopIteration. En Scrapy vamos a estar en contacto constantemente con los Iterators y Generators.
+Al llamarlo con la consola nos devuelve el resultado paso a paso, al sobrepasar los pasos se genera un error del tipo stopIteration.
+
+> En Scrapy vamos a estar en contacto constantemente con los Iterators y Generators, por eso es importante recordarlos.
 
 ## Modulo 2 Trabajando con Scrapy
 
