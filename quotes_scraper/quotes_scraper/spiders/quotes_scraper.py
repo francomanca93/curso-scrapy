@@ -21,6 +21,25 @@ class QuotesSpider(scrapy.Spider):
         },
     }
 
+    def parse_only_quotes(self, response, **kwargs):
+        if kwargs:
+            quotes = kwargs['quotes']
+        quotes_path = '//span[@class="text" and @itemprop="text"]/text()'
+        quotes.extend(response.xpath(quotes_path).getall())
+        
+        next_page_button_path = '//ul[@class="pager"]//li[@class="next"]/a/@href'
+        next_page_button_link = response.xpath(next_page_button_path).get()
+        if next_page_button_link:
+            yield response.follow(
+                next_page_button_link, 
+                callback=self.parse_only_quotes, 
+                cb_kwargs={'quotes':quotes}
+            )
+        else:
+            yield {
+                'quotes': quotes
+            }
+
     def parse(self, response):
         """ it help us to analize the file and extract information from this"""
         
@@ -35,11 +54,14 @@ class QuotesSpider(scrapy.Spider):
 
         yield {
             'title': title,
-            'quotes': quotes,
             'top_ten_tags': top_ten_tags
         }
         
         next_page_button_path = '//ul[@class="pager"]//li[@class="next"]/a/@href'
         next_page_button_link = response.xpath(next_page_button_path).get()
         if next_page_button_link:
-            yield response.follow(next_page_button_link, callback=self.parse)
+            yield response.follow(
+                next_page_button_link, 
+                callback=self.parse_only_quotes, 
+                cb_kwargs={'quotes': quotes}
+            )
