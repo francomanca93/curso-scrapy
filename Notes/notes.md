@@ -624,9 +624,13 @@ A tener en cuenta:
 
 ### Clase 13 Seguir links: responsefollow
 
-EN esta clase emulamos el comportamiento de clicks para irnos a los links de las paginas.
+Nuestro [[Spiders|spider]] puede considerar la posibilidad de scrapear varias páginas del sito, buscando el “botón” que hace que pases la pagina, y extrayendo el atributo href para luego usar la función del objeto `response.follow(next_url, callback = self.name_function)`. Con esta función implementada puedes navegar a la siguiente página para ejecutar el callback.
 
-Una estrategia es tomar el atributo href del boton next del nagevador con una expresion de xpath.
+Callack en computación es cualquier código ejecutable que se pasa como argumento en otro. En nuestro caso la función follow espera a que se termine el parseo para ejecutarse despues del `requests`.
+
+Scrapy tiene una funcionalidad llamada 'FEED EXPORT' que en otra palabras es un diccionario que me permitirá alimentarlo con diferentes formatos de serialización ( JSON, XML, CSV, Pickle, JL, Marshal…) cada formato de serialización tiene sus reglas, inclusive puedes almacenar directamente con S3, GCS y más. Mas sobre esto en [Feed exports](https://docs.scrapy.org/en/latest/topics/feed-exports.html)
+
+En esta clase emulamos el comportamiento de clicks para irnos a los links de las paginas.Una estrategia es tomar el atributo href del boton next del nagevador con una expresion de xpath.
 
 Usamos el shell de scrapy
 
@@ -655,35 +659,49 @@ class QoutesSpider(scrapy.Spider):
         'http://quotes.toscrape.com'
     ]
 
-    # uso custom settings para guardarlo 
+    # uso custom_settings para guardarlo 
     custom_settings = {
-        'FEED_URI': 'quotes.json', #nombre archivo 
-        'FEED_FORMAT': 'json' #formato
+        'FEEDS': {
+            'quotes.json': {
+                'format': 'json',
+                'encoding': 'utf8',
+                'store_empty': False,
+                'fields': None,
+                'indent': 4,
+                'item_export_kwargs': {
+                    'export_empty_fields': True,
+                },
+            },
+        },
     }
 
     #Transformaremos a parse en un generador
     def parse(self, response):
-        title = response.xpath('//h1/a/text()').get()
-        quotes = response.xpath(
-            '//span[@class="text" and @itemprop="text"]/text()').getall()
-        top_ten_tags = response.xpath(
-            '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()').getall()
+        title_path = '//h1/a/text()'
+        title = response.xpath(title_path).get()
+
+        quotes_path = '//span[@class="text" and @itemprop="text"]/text()'
+        quotes = response.xpath(quotes_path).getall()
+
+        top_ten_tags_path = '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()'
+        top_ten_tags = response.xpath(top_ten_tags_path).getall()
 
         yield {
             'title': title,
             'quotes': quotes,
             'top_ten_tags': top_ten_tags
         }
-
-        next_page_button_link = response.xpath('//ul[@class="pager"]//li[@class="next"]/a/@href').get()
+        
+        next_page_button_path = '//ul[@class="pager"]//li[@class="next"]/a/@href'
+        next_page_button_link = response.xpath(next_page_button_path).get()
         if next_page_button_link:
-            yield response.follow(next_page_button_link, callback = self.parse)
+            yield response.follow(next_page_button_link, callback=self.parse)
             # follow agrega a la url principal '/page/2/'
 ```
 
-Los custom settings nos permitieron guardar el archivo en lugar de usar el flag -o en la consola, pero el archivo json tiene informacion repetida en el titulo y contiene los top ten tags, estos los podriamos eliminar con python limpiando el archivo, pero scrapy tiene la caracteristica de que podemos usar multiples callbacks de tipo parse, veremos como solucionar esto de esta forma en la siguiente clase.
-
 ### Clase 14 Múltiples callbacks
+
+Los custom settings nos permitieron guardar el archivo en lugar de usar el flag -o en la consola, pero el archivo json tiene informacion repetida en el titulo y contiene los top ten tags, estos los podriamos eliminar con python limpiando el archivo, pero scrapy tiene la caracteristica de que podemos usar multiples callbacks de tipo parse, veremos como solucionar esto.
 
 Implementacion de multiples callbacks
 
