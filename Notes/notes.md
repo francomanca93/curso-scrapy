@@ -439,15 +439,27 @@ Vemos la respuesta del status code y los headers
 
 ### Clase 11 Usando XPath para extraer datos
 
+Algo de teoria previa:
+
+Una vez se tiene el objeto response podemos empezar a probar las expresiones Xpath, en el shell de scrapy: `scrapy shell url`
+
+Hay que tener en consideración el HTML, CSS y si la página es **‘responsive’**, es decir, que su HTML y la disposición de los elementos varía en función del tamaño del dispositivo (Mobile, Web, Tablet) en el que se renderiza.
+
+**¿Porqué importa?**
+En el momento de inspeccionar elementos con la herramienta de desarrolladores, es ideal verificar que estés extrayendo expresiones xpath de la versión del sitio web que deseas. Con una página web responsiva, tienes diferentes versiones, las clases pueden cambiar, y los objetos moverse de sitio.
+
+De allí que hacer crawl de una página para obtener primero su HTML es tan útil. Sabes que el HTML que te trae la respuesta es del que vas a extraer tu información.
+
 En esta clase crearemos un script para obtener las top ten tags.
 
-paso 1: usamos la shell
+- paso 1: usamos la shell
 
 ```py
 scrapy shell 'http://quotes.toscrape.com/'
 ```
 
-Despues de analizar la pagina, construirmos nuestra expresion
+- paso 2: Analizar la pagina
+- paso 3: construirmos nuestra expresion
 
 ```py
 In [1]: response.xpath('//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()').getall()
@@ -465,7 +477,7 @@ Out[1]:
  'simile']
 ```
 
-Construimos nuestro spider
+- paso 4: Construimos nuestro spider
 
 ```py
 import scrapy
@@ -475,59 +487,59 @@ import scrapy
 # Top Ten Tags = //div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()
 
 
-class QoutesSpider(scrapy.Spider):
-    name = 'quotes' # nombre unico cada spider
+class QuotesSpider(scrapy.Spider):
+    name = 'quotes'
     start_urls = [
-        'http://quotes.toscrape.com/'
+        'http://quotes.toscrape.com/page/1/'
     ]
 
-    #metdo obligatorio
     def parse(self, response):
-        print('*' * 20)
-        print('\n\n')
-
-        title = response.xpath('//h1/a/text()').get()
-        print(f'Titulo: {title}')
+        """ it help us to analize the file and extract information from this"""
+        print('*' * 10)
         print('\n\n\n')
+        
+        title_path = '//h1/a/text()'
+        title = response.xpath(title_path).get()
+        print(f"Titulo: {title}")
+        print('\n')
 
-        quotes = response.xpath(
-            '//span[@class="text" and @itemprop="text"]/text()').getall()
-        print('Citas: ')
+        quotes_path = '//span[@class="text" and @itemprop="text"]/text()'
+        quotes = response.xpath(quotes_path).getall()
+        print(f"Quotes")
         for quote in quotes:
-            print(f'- {quote}')
-        print('\n\n')
+            print(f"- {quote}")
+        print('\n')
 
-        top_ten_tags = response.xpath(
-            '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()').getall()
-        print('Top Ten Tags: ')
+        top_ten_tags_path = '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()'
+        top_ten_tags = response.xpath(top_ten_tags_path).getall()
+        print(f"Tags")
         for tag in top_ten_tags:
-            print(f'- {tag}')
+            print(f"- {tag}")
+        print('\n')
+        
+        #print(response.status, response.headers)
+        print('\n\n\n')
+        print('*' * 10)
 
-        print('\n\n')
-
-        # print(response.status, response.headers)
-        print('*' * 20)
-        print('\n\n')
 
 ```
 
-Ejecutamos el spider
+- paso 5: Ejecutamos el spider
 
 ```py
 scrapy crawl quotes
 ```
 
-```py
-********************
+```shell
+**********
+
 
 
 
 Titulo: Quotes to Scrape
 
 
-
-
-Citas:
+Quotes
 - “The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.”
 - “It is our choices, Harry, that show what we truly are, far more than our abilities.”
 - “There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.”
@@ -540,8 +552,7 @@ Citas:
 - “A day without sunshine is like, you know, night.”
 
 
-
-Top Ten Tags:
+Tags
 - love
 - inspirational
 - life
@@ -555,7 +566,10 @@ Top Ten Tags:
 
 
 
-********************
+
+
+
+**********
 ```
 
 ### Clase 12 Guardando los datos
