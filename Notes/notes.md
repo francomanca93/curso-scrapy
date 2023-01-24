@@ -272,15 +272,17 @@ Al llamarlo con la consola nos devuelve el resultado paso a paso, al sobrepasar 
 
 Trabajaremos sobre el sandbox de quotes para traer el titulo y las citas usando la consola interactiva de Scrapy.
 
-Para ello abrimos en la terminal la ruta `hello_world/tuturial` una vez dentro podremos continuar escribiendo instrucciones de x path
+- [http://quotes.toscrape.com/](http://quotes.toscrape.com/)
+
+Para ello abrimos en la terminal la ruta `hello_world/tuturial` una vez dentro podremos continuar escribiendo instrucciones de xpath:
 
 ```py
 scrapy shell 'http://quotes.toscrape.com/page/1'
 ```
 
-Obtenemos esta respuesta
+Se nos abrirá la shell interactiva de scrapy y obtenemos esta respuesta:
 
-```shelll
+```shell
 2020-08-30 08:22:42 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://quotes.toscrape.com/page/1/> (referer: None)
 [s] Available Scrapy objects:
 [s]   scrapy     scrapy module (contains scrapy.Request, scrapy.Selector, etc)
@@ -313,11 +315,21 @@ Ahora obtengo la cita
 >>>
 ```
 
-Tambien la shell tiene otros metodos por ejemplo request
+Con la función predefinida de python`dir()` podemos ver todos los métodos de un objeto.
+
+Todos los métodos de request:
 
 ```py
 >>> dir(request)
 ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', '__weakref__', '_body', '_cb_kwargs', '_encoding', '_get_body', '_get_url', '_meta', '_set_body', '_set_url', '_url', 'body', 'callback', 'cb_kwargs', 'cookies', 'copy', 'dont_filter', 'encoding', 'errback', 'flags', 'from_curl', 'headers', 'meta', 'method', 'priority', 'replace', 'url']
+```
+
+Todos los métodos de response:
+
+```py
+>>> dir(response)
+['_DEFAULT_ENCODING', '__annotations__', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', '__weakref__', '_auto_detect_fun', '_body', '_body_declared_encoding', '_body_inferred_encoding', '_bom_encoding', '_cached_benc', '_cached_decoded_json', '_cached_selector', '_cached_ubody', '_declared_encoding', '_encoding', '_get_body', '_get_url', '_headers_encoding', '_set_body', '_set_url', '_url', 'attributes', 'body', 'cb_kwargs', 'certificate', 'copy', 'css', 'encoding', 'flags', 'follow', 'follow_all', 'headers', 'ip_address', 'json', 'meta', 'protocol', 'replace', 'request', 'selector', 'status', 'text', 'url', 'urljoin', 'xpath']
+>>> 
 ```
 
 ### Clase 9 Nuestro primer proyecto: estructura de carpetas
