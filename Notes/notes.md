@@ -391,10 +391,9 @@ Se usan cuando:
     - Post-procesar las URLS de partida.
     - Manejar las excepciones del spider.
 
-
 ### Clase 10 Spiders
 
-En palabras sencillas es una clase de Python (Scrapy) en la que definimos la logica necesaria para extraer informacion.
+Un **Spider** en palabras sencillas es una clase de Python (Scrapy) en la que definimos la logica necesaria para extraer informacion.
 
 En la carpeta Spiders del proyecto creo el archivo quotes.py
 
@@ -402,12 +401,16 @@ En la carpeta Spiders del proyecto creo el archivo quotes.py
 import scrapy
 
 class QoutesSpider(scrapy.Spider):
-    name = 'quotes' # nombre unico cada spider
+    # name es el nombre unico con el que scrapy se va referir al spider dentro del proyect.
+    name = 'quotes' # nombre unico para cada spider
+    # Definimos una lista de url a las cuales les vamos a realizar las peticiones http.
     start_urls = [
         'http://quotes.toscrape.com/'
     ]
 
-    #metdo obligatorio
+    # metodo obligatorio
+    # el metodo parse el cual nos sirve para analizar un archivo y extraer informacion valiosa a partir de el.
+
     def parse(self, response):
         print('*' * 20)
         print('\n\n')
@@ -421,6 +424,8 @@ Ejecutamos el spider
 ```py
 scrapy crawl quotes
 ```
+
+`quotes` viene del nombre que le dimos al spider en el codigo anterior.
 
 Vemos la respuesta del status code y los headers
 
