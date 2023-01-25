@@ -791,68 +791,23 @@ A tener en cuenta:
 
 En esta clase modificamos el top 10 con scrapy, modificamos la variable top_ten_tags que ahora solo sera top_tags y que recibira como argumento el numero referente al top que quiero optener.
 
+Si existe dentro de la ejecución de este spider un atributo de nombre cualquiera, en este casp `top` lo voy a guardar en mi variable `top`. Si no se envía el atributo en la ejecución se guarda `None` en `top`
+
 ```py
-import scrapy
-
-# Titulo = //h1/a/text()
-# Citas = //span[@class="text" and @itemprop="text"]/text()
-# Top Ten Tags = //div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()
-# Next page button = response.xpath('//ul[@class="pager"]//li[@class="next"]/a/@href').get()
-
-
-class QoutesSpider(scrapy.Spider):
-    name = 'quotes'
-    start_urls = [
-        'http://quotes.toscrape.com'
-    ]
-
-    # uso custom settings para archivo
-    custom_settings = {
-        'FEED_URI': 'quotes.json',
-        'FEED_FORMAT': 'json'
-    }
-
-    def parse_only_quotes(self, response, **kwargs):
-        if kwargs:
-            quotes = kwargs['quotes']
-        quotes.extend(response.xpath(
-            '//span[@class="text" and @itemprop="text"]/text()').getall())
-
-        next_page_button_link = response.xpath(
-            '//ul[@class="pager"]//li[@class="next"]/a/@href').get()
-        if next_page_button_link:
-            yield response.follow(next_page_button_link,
-                                  callback=self.parse_only_quotes,
-                                  cb_kwargs={'quotes': quotes})
-        else:
-            yield {
-                'quotes': quotes,
-            }
-
-    def parse(self, response):
-        title = response.xpath('//h1/a/text()').get()
-        quotes = response.xpath(
-            '//span[@class="text" and @itemprop="text"]/text()').getall()
-        top_tags = response.xpath(
-            '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()').getall()
-
-        top = getattr(self, 'top', None)
+...
+        top_tags_path = '//div[contains(@class, "tags-box")]//span[@class="tag-item"]/a/text()'
+        top_tags = response.xpath(top_tags_path).getall()
         
+        top = getattr(self, 'top', None)
         if top:
             top = int(top)
-            top_tags
+            top_tags = top_tags[:top]
 
         yield {
             'title': title,
-            'top_tags': top_tags[:top]
+            'top_tags': top_tags
         }
-
-        next_page_button_link = response.xpath(
-            '//ul[@class="pager"]//li[@class="next"]/a/@href').get()
-        if next_page_button_link:
-            yield response.follow(next_page_button_link,
-                                  callback=self.parse_only_quotes,
-                                  cb_kwargs={'quotes': quotes})
+...
 ```
 
 Ahora ejecuto mi script pasando el flag -a para indicar a scrapy que voy a enviar el argumento top=3
